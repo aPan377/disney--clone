@@ -1,15 +1,29 @@
 import React from "react";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 
 function Detail() {
+  const { name } = useParams();
+  const movies = useSelector((state) => state.movies);
+  const originals = useSelector((state) => state.originals);
+  const series = useSelector((state) => state.series);
+
+  const allMovies = [...movies, ...originals, ...series];
+
+  const specificMovie = allMovies.find((movie) => name === movie.title);
+
   return (
     <Container>
       <Background>
-        <img src="/images/bao-cartoon.jpg" />
+        <img src={specificMovie.source} />
       </Background>
       <ImageTitle>
         <img src="/images/viewers-pixar.png" />
       </ImageTitle>
+      <MovieTitle>
+        <p>{specificMovie.title}</p>
+      </MovieTitle>
       <Controls>
         <PlayButton>
           <img src="/images/play-icon-black.png" />
@@ -26,12 +40,8 @@ function Detail() {
           <img src="/images/group-icon.png" />
         </GroupWatchButton>
       </Controls>
-      <Genre>2018, Family, fantasy, Kids, Animation</Genre>
-      <Description>
-        An aging and lonely Chinese Canadian mother suffering from empty nest
-        syndrome, who receives an unexpected second chance at motherhood when
-        she makes a steamed bun (baozi) that comes to life.
-      </Description>
+      <Genre>{specificMovie.genre}</Genre>
+      <Description>{specificMovie.description}</Description>
     </Container>
   );
 }
@@ -43,6 +53,10 @@ const Container = styled.div`
   min-height: calc(100vh - 70px);
   padding: 0 calc(3.5vw + 5px);
   position: relative;
+
+  @media (max-width: 500px) {
+    padding: 0 10px;
+  }
 `;
 
 const Background = styled.div`
@@ -58,13 +72,20 @@ const Background = styled.div`
   }
 `;
 
+const MovieTitle = styled.div`
+  z-index: 10;
+  font-size: 30px;
+`;
+
 const ImageTitle = styled.div`
-  height: 20vh;
-  width: 25vw;
-  min-height: 150px;
-  min-width: 180px;
+  height: 150px;
+  width: 120px;
+
+  /* min-height: 150px;
+  min-width: 180px; */
 
   img {
+    margin-left: -20px;
     width: 100%;
     height: 100%;
     object-fit: contain;
@@ -91,6 +112,10 @@ const PlayButton = styled.button`
   cursor: pointer;
   transition: background-color 350ms ease;
 
+  @media (max-width: 500px) {
+    margin-right: 10px;
+  }
+
   &:hover {
     background: rgba(198, 198, 198, 0.4);
   }
@@ -103,6 +128,10 @@ const TrailerButton = styled(PlayButton)`
 `;
 
 const AddButton = styled.button`
+  @media (max-width: 500px) {
+    margin-right: 3px;
+  }
+
   margin-right: 16px;
   display: flex;
   justify-content: center;

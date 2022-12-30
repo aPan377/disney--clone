@@ -1,38 +1,59 @@
 import React from "react";
 import styled from "styled-components";
+import ImgSlider from "./ImgSlider";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 function Movies() {
+  const movies = useSelector((state) => state.movies);
+
   return (
-    <Container>
-      <h4>Recommended for You</h4>
-      <Content>
-        <Wrap>
-          <img src="/images/zim-cartoon.jpg" />
-        </Wrap>
-        <Wrap>
-          <img src="/images/ginger-cartoon.jpg" />
-        </Wrap>
-        <Wrap>
-          <img src="/images/fairy-cartoon.jpg" />
-        </Wrap>
-        <Wrap>
-          <img src="/images/avatar-cartoon.jpg" />
-        </Wrap>
-      </Content>
-    </Container>
+    <>
+      <ImgSlider />
+      <Container>
+        <h4>Movies and Cartoons</h4>
+        <Content>
+          {movies.map((movie) => (
+            <Wrap key={movie.id}>
+              <Link to={`/detail/${movie.title}`}>
+                <img src={movie.source} />
+              </Link>
+            </Wrap>
+          ))}
+        </Content>
+      </Container>
+    </>
   );
 }
 
 export default Movies;
 
 const Container = styled.div`
-  padding: 0 26px 26px 26px;
+  padding: 26px 26px 26px 26px;
+  position: relative;
+
+  @media (min-width: 820px) {
+    min-height: 75vh;
+  }
+
+  &::before {
+    content: "";
+    background: url("/images/home-background.png") center center / cover repeat
+      fixed;
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
 `;
 
 const Content = styled.div`
   display: grid;
   gap: 25px;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  @media (min-width: 820px) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 `;
 
 const Wrap = styled.div`
